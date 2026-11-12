@@ -100,8 +100,11 @@ void vykdytiRankiniIvedima(string konteinerio_pavadinimas)
     for (int j = 0; j < n; j++)
     {
         studentas laik;
+        string v, p;
         std::cout << "Iveskite per tarpa studento varda ir pavarde: ";
-        std::cin >> laik.vardas() >> laik.pavarde();
+        std::cin >> v >> p;
+        laik.setVardas(v);
+        laik.setPavarde(p);
 
         std::cout << "\nPasirinkite kaip ivesti pazymius:\n";
         std::cout << "1 - Ivesti pazymius ir egzamina ranka\n";
@@ -114,12 +117,13 @@ void vykdytiRankiniIvedima(string konteinerio_pavadinimas)
             std::cout << "Veskite studento pazymius. Noredami baigti iveskite '0'.\n";
             while (true)
             {
-                int a = ivestiSkaiciu("Iveskite " + std::to_string(laik.nd().size() + 1) + " pazymi: ", 0, 10);
+                int a = ivestiSkaiciu("Iveskite pazymi (0 - baigti): ", 0, 10);
                 if (a == 0) break;
                 suma += a;
-                laik.nd().push_back(a);
+                laik.pridetiNd(a);
             }
-            laik.egz() = ivestiSkaiciu("Iveskite egzamino rezultata: ", 1, 10);
+            int egz_rez = ivestiSkaiciu("Iveskite egzamino rezultata: ", 1, 10);
+            laik.setEgz(egz_rez);
         }
         else
         {
@@ -128,13 +132,14 @@ void vykdytiRankiniIvedima(string konteinerio_pavadinimas)
             for (int i = 0; i < nd_kiek; i++)
             {
                 int p = atspazymiai(1, 10);
-                laik.nd().push_back(p);
+                laik.pridetiNd(p);
                 suma += p;
                 std::cout << p << " ";
             }
             std::cout << "\n";
-            laik.egz() = atspazymiai(1, 10);
-            std::cout << "Egzaminas: " << laik.egz() << "\n";
+            int egz_rez = atspazymiai(1, 10);
+            laik.setEgz(egz_rez);
+            std::cout << "Egzaminas: " << egz_rez << "\n";
         }
 
         double vid = 0;
@@ -146,8 +151,9 @@ void vykdytiRankiniIvedima(string konteinerio_pavadinimas)
             med = mediana(laik.nd());
         }
 
-        laik.galutinis_vid() = 0.4 * vid + 0.6 * laik.egz();
-        laik.galutinis_med() = 0.4 * med + 0.6 * laik.egz();
+        double gal_vid = 0.4 * vid + 0.6 * laik.egz();
+        double gal_med = 0.4 * med + 0.6 * laik.egz();
+        laik.setGalutiniai(gal_vid, gal_med);
 
         grupe.push_back(laik);
         std::cout << "Studento atminties adresas (" << konteinerio_pavadinimas << "): " << &grupe.back() << "\n";

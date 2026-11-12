@@ -13,14 +13,14 @@ studentas::studentas(std::istream& is) {
     readStudent(is);
 }
 
-double studentas::galBalas(double (*f)(vector<int>)) const {
+double studentas::galBalas(double (*f)(std::vector<int>)) const {
+    if (nd_.empty()) return 0.6 * egz_;
+
     double suma = 0;
     for (int p : nd_) {
         suma += p;
     }
-    int k = nd_.size();
-    double vid = (k > 0) ? suma / k : 0.0;
-    double med = f(nd_);
+    double vid = suma / nd_.size();
     return 0.4 * vid + 0.6 * egz_;
 }
 

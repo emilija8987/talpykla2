@@ -136,7 +136,7 @@
 	<string>
 	<vector>
 
-1794519028 source:c:\users\vartotojas\desktop\vu\ii kursas ( i semestras )\objektinis programavimas\v1.1\studentas.cpp
+1794522123 source:c:\users\vartotojas\desktop\vu\ii kursas ( i semestras )\objektinis programavimas\v1.1\studentas.cpp
 	<iostream>
 	<iomanip>
 	<sstream>
@@ -145,7 +145,7 @@
 	"studentas.h"
 	"pagalbine.h"
 
-1794518925 c:\users\vartotojas\desktop\vu\ii kursas ( i semestras )\objektinis programavimas\v1.1\studentas.h
+1794522065 c:\users\vartotojas\desktop\vu\ii kursas ( i semestras )\objektinis programavimas\v1.1\studentas.h
 	<string>
 	<vector>
 	<fstream>
@@ -157,7 +157,7 @@
 	<algorithm>
 	"pagalbine.h"
 
-1794518929 source:c:\users\vartotojas\desktop\vu\ii kursas ( i semestras )\objektinis programavimas\v1.1\main.cpp
+1794521980 source:c:\users\vartotojas\desktop\vu\ii kursas ( i semestras )\objektinis programavimas\v1.1\main.cpp
 	<iostream>
 	<vector>
 	<string>

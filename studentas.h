@@ -21,28 +21,22 @@ private:
     double galutinis_med_;
 
 public:
-    // Konstruktoriai
     studentas() : egz_(0), galutinis_vid_(0), galutinis_med_(0) {}
     studentas(std::istream& is);
 
-    // Get'eriai ir set'eriai (inline, gràşinantys reikğmes arba nuorodas suderinamumui)
     inline std::string vardas() const { return vardas_; }
-    inline std::string& vardas() { return vardas_; }
-
     inline std::string pavarde() const { return pavarde_; }
-    inline std::string& pavarde() { return pavarde_; }
-
     inline std::vector<int> nd() const { return nd_; }
-    inline std::vector<int>& nd() { return nd_; }
-
     inline int egz() const { return egz_; }
-    inline int& egz() { return egz_; }
-
     inline double galutinis_vid() const { return galutinis_vid_; }
-    inline double& galutinis_vid() { return galutinis_vid_; }
-
     inline double galutinis_med() const { return galutinis_med_; }
-    inline double& galutinis_med() { return galutinis_med_; }
+
+    void setVardas(const std::string& v) { vardas_ = v; }
+    void setPavarde(const std::string& p) { pavarde_ = p; }
+    void setEgz(int e) { egz_ = e; }
+    void pridetiNd(int pazymys) { nd_.push_back(pazymys); }
+    void setNd(const std::vector<int>& n) { nd_ = n; }
+    void setGalutiniai(double vid, double med) { galutinis_vid_ = vid; galutinis_med_ = med; }
 
     std::istream& readStudent(std::istream& is);
     double galBalas(double (*) (std::vector<int>) = mediana) const;
@@ -114,21 +108,25 @@ bool skaitytiFaila(Container &grupe, const std::string &failas, int kiekis = 0)
 
         std::stringstream ss(eilute);
         studentas laik;
-        ss>>laik.vardas()>>laik.pavarde();
+        std::string v, p;
+        ss >> v >> p;
+        laik.setVardas(v);
+        laik.setPavarde(p);
 
         std::vector<int> skaiciai;
-        int p;
-        while (ss>>p)
+        int paz;
+        while (ss >> paz)
         {
-            skaiciai.push_back(p);
+            skaiciai.push_back(paz);
         }
 
         if (!skaiciai.empty())
         {
-            laik.egz() = skaiciai.back();
+            int egzaminas = skaiciai.back();
             skaiciai.pop_back();
 
-            laik.nd() = skaiciai;
+            laik.setEgz(egzaminas);
+            laik.setNd(skaiciai);
 
             double suma = 0;
             for (int pazymys : laik.nd())
@@ -140,8 +138,9 @@ bool skaitytiFaila(Container &grupe, const std::string &failas, int kiekis = 0)
             double vid = (k > 0) ? suma / k : 0.0;
             double med = mediana(laik.nd());
 
-            laik.galutinis_vid() = 0.4 * vid + 0.6 * laik.egz();
-            laik.galutinis_med() = 0.4 * med + 0.6 * laik.egz();
+            double gal_vid = 0.4 * vid + 0.6 * laik.egz();
+            double gal_med = 0.4 * med + 0.6 * laik.egz();
+            laik.setGalutiniai(gal_vid, gal_med);
 
             grupe.push_back(laik);
         }
