@@ -12,48 +12,56 @@
 #include <algorithm>
 #include "pagalbine.h"
 
-class Studentas {
+class studentas {
 private:
-    std::string vardas_;
-    std::string pavarde_;
+    std::string vardas_, pavarde_;
     std::vector<int> nd_;
-    int egzaminas_;
+    int egz_;
     double galutinis_vid_;
     double galutinis_med_;
 
 public:
-    Studentas() : egzaminas_(0), galutinis_vid_(0), galutinis_med_(0) { }
-    Studentas(std::istream& is);
+    // Konstruktoriai
+    studentas() : egz_(0), galutinis_vid_(0), galutinis_med_(0) {}
+    studentas(std::istream& is);
 
+    // Get'eriai ir set'eriai (inline, gràşinantys reikğmes arba nuorodas suderinamumui)
     inline std::string vardas() const { return vardas_; }
-    inline std::string pavarde() const { return pavarde_; }
-    inline int egz() const { return egzaminas_; }
-    inline std::vector<int> nd() const { return nd_; }
-    inline double galutinis_vid() const { return galutinis_vid_; }
-    inline double galutinis_med() const { return galutinis_med_; }
+    inline std::string& vardas() { return vardas_; }
 
-    double galBalas(double (*) (std::vector<int>) = mediana) const;
+    inline std::string pavarde() const { return pavarde_; }
+    inline std::string& pavarde() { return pavarde_; }
+
+    inline std::vector<int> nd() const { return nd_; }
+    inline std::vector<int>& nd() { return nd_; }
+
+    inline int egz() const { return egz_; }
+    inline int& egz() { return egz_; }
+
+    inline double galutinis_vid() const { return galutinis_vid_; }
+    inline double& galutinis_vid() { return galutinis_vid_; }
+
+    inline double galutinis_med() const { return galutinis_med_; }
+    inline double& galutinis_med() { return galutinis_med_; }
+
     std::istream& readStudent(std::istream& is);
+    double galBalas(double (*) (std::vector<int>) = mediana) const;
 };
 
-void printas(const Studentas &laik, std::ofstream &R);
+void printas(const studentas &laik, std::ofstream &R);
 void generuotiStudentuFaila(const std::string &failoPavadinimas, int kiekis, int nd_kiek = 5);
 
-bool compare(const Studentas &a, const Studentas &b);
-bool comparePagalPavarde(const Studentas &a, const Studentas &b);
-bool comparePagalEgza(const Studentas &a, const Studentas &b);
-
-inline bool palygintiPagalVarda(const Studentas &a, const Studentas &b) {
+inline bool palygintiPagalVarda(const studentas &a, const studentas &b) {
     if (a.vardas() != b.vardas()) return a.vardas() < b.vardas();
     return a.pavarde() < b.pavarde();
 }
 
-inline bool palygintiPagalPavarde(const Studentas &a, const Studentas &b) {
+inline bool palygintiPagalPavarde(const studentas &a, const studentas &b) {
     if (a.pavarde() != b.pavarde()) return a.pavarde() < b.pavarde();
     return a.vardas() < b.vardas();
 }
 
-inline bool palygintiPagalVidurki(const Studentas &a, const Studentas &b) {
+inline bool palygintiPagalVidurki(const studentas &a, const studentas &b) {
     if (a.galutinis_vid() != b.galutinis_vid()) {
         return a.galutinis_vid() > b.galutinis_vid();
     }
@@ -63,7 +71,7 @@ inline bool palygintiPagalVidurki(const Studentas &a, const Studentas &b) {
     return a.pavarde() < b.pavarde();
 }
 
-inline bool palygintiPagalMediana(const Studentas &a, const Studentas &b) {
+inline bool palygintiPagalMediana(const studentas &a, const studentas &b) {
     if (a.galutinis_med() != b.galutinis_med()) {
         return a.galutinis_med() > b.galutinis_med();
     }
@@ -74,13 +82,13 @@ inline bool palygintiPagalMediana(const Studentas &a, const Studentas &b) {
 }
 
 template <typename C>
-typename std::enable_if<std::is_same<C, std::vector<Studentas>>::value>::type
+typename std::enable_if<std::is_same<C, std::vector<studentas>>::value>::type
 pabandykReserve(C &grupe, int kiekis) {
     if (kiekis > 0) grupe.reserve(kiekis);
 }
 
 template <typename C>
-typename std::enable_if<!std::is_same<C, std::vector<Studentas>>::value>::type
+typename std::enable_if<!std::is_same<C, std::vector<studentas>>::value>::type
 pabandykReserve(C &grupe, int kiekis) {
 
 }
@@ -105,15 +113,45 @@ bool skaitytiFaila(Container &grupe, const std::string &failas, int kiekis = 0)
         if (eilute.empty()) continue;
 
         std::stringstream ss(eilute);
-        Studentas laik(ss);
-        grupe.push_back(laik);
+        studentas laik;
+        ss>>laik.vardas()>>laik.pavarde();
+
+        std::vector<int> skaiciai;
+        int p;
+        while (ss>>p)
+        {
+            skaiciai.push_back(p);
+        }
+
+        if (!skaiciai.empty())
+        {
+            laik.egz() = skaiciai.back();
+            skaiciai.pop_back();
+
+            laik.nd() = skaiciai;
+
+            double suma = 0;
+            for (int pazymys : laik.nd())
+            {
+                suma += pazymys;
+            }
+
+            int k = laik.nd().size();
+            double vid = (k > 0) ? suma / k : 0.0;
+            double med = mediana(laik.nd());
+
+            laik.galutinis_vid() = 0.4 * vid + 0.6 * laik.egz();
+            laik.galutinis_med() = 0.4 * med + 0.6 * laik.egz();
+
+            grupe.push_back(laik);
+        }
     }
     f.close();
     return true;
 }
 
 template <typename Container>
-typename std::enable_if<std::is_same<Container, std::vector<Studentas>>::value>::type
+typename std::enable_if<std::is_same<Container, std::vector<studentas>>::value>::type
 rusiuotiStudentus(Container &grupe, int kriterijus)
 {
     if (kriterijus == 1) std::sort(grupe.begin(), grupe.end(), palygintiPagalVarda);
@@ -123,7 +161,7 @@ rusiuotiStudentus(Container &grupe, int kriterijus)
 }
 
 template <typename Container>
-typename std::enable_if<!std::is_same<Container, std::vector<Studentas>>::value>::type
+typename std::enable_if<!std::is_same<Container, std::vector<studentas>>::value>::type
 rusiuotiStudentus(Container &grupe, int kriterijus)
 {
     if (kriterijus == 1) grupe.sort(palygintiPagalVarda);
@@ -177,14 +215,14 @@ void dalinti2Strategija(Container &grupe, Container &vargsiukai, Container &kiet
     vargsiukai.clear();
     kietiakiai.clear();
 
-    if constexpr (std::is_same<Container, std::vector<Studentas>>::value) {
+    if constexpr (std::is_same<Container, std::vector<studentas>>::value) {
         for (const auto &s : grupe) {
             if (s.galutinis_vid() < 5.0) {
                 vargsiukai.push_back(s);
             }
         }
         grupe.erase(
-            std::remove_if(grupe.begin(), grupe.end(), [](const Studentas &s) {
+            std::remove_if(grupe.begin(), grupe.end(), [](const studentas &s) {
                 return s.galutinis_vid() < 5.0;
             }),
             grupe.end()
@@ -209,8 +247,8 @@ void dalinti3Strategija(Container &grupe, Container &vargsiukai, Container &kiet
     vargsiukai.clear();
     kietiakiai.clear();
 
-    if constexpr (std::is_same<Container, std::vector<Studentas>>::value) {
-        auto it = std::stable_partition(grupe.begin(), grupe.end(), [](const Studentas &s) {
+    if constexpr (std::is_same<Container, std::vector<studentas>>::value) {
+        auto it = std::stable_partition(grupe.begin(), grupe.end(), [](const studentas &s) {
             return s.galutinis_vid() < 5.0;
         });
 
@@ -221,10 +259,10 @@ void dalinti3Strategija(Container &grupe, Container &vargsiukai, Container &kiet
     }
     else {
         kietiakiai = grupe;
-        kietiakiai.remove_if([](const Studentas &s) { return s.galutinis_vid() < 5.0; });
+        kietiakiai.remove_if([](const studentas &s) { return s.galutinis_vid() < 5.0; });
 
         vargsiukai = grupe;
-        vargsiukai.remove_if([](const Studentas &s) { return s.galutinis_vid() >= 5.0; });
+        vargsiukai.remove_if([](const studentas &s) { return s.galutinis_vid() >= 5.0; });
 
         grupe.clear();
     }

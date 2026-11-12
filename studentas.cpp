@@ -9,52 +9,23 @@
 using std::string;
 using std::vector;
 
-Studentas::Studentas(std::istream& is) {
+studentas::studentas(std::istream& is) {
     readStudent(is);
 }
 
-double Studentas::galBalas(double (*mediana_func)(std::vector<int>)) const {
+double studentas::galBalas(double (*f)(vector<int>)) const {
     double suma = 0;
-    for (int pazymys : nd_) {
-        suma += pazymys;
+    for (int p : nd_) {
+        suma += p;
     }
     int k = nd_.size();
     double vid = (k > 0) ? suma / k : 0.0;
-    double med = mediana_func(nd_);
-
-    return 0.4 * med + 0.6 * egzaminas_;
+    double med = f(nd_);
+    return 0.4 * vid + 0.6 * egz_;
 }
 
-std::istream& Studentas::readStudent(std::istream& is) {
-    string v, p;
-    if (is >> v >> p) {
-        vardas_ = v;
-        pavarde_ = p;
-
-        vector<int> skaiciai;
-        int paz;
-        while (is >> paz) {
-            skaiciai.push_back(paz);
-        }
-
-        if (!skaiciai.empty()) {
-            egzaminas_ = skaiciai.back();
-            skaiciai.pop_back();
-            nd_ = skaiciai;
-
-            double suma = 0;
-            for (int pazymys : nd_) {
-                suma += pazymys;
-            }
-
-            int k = nd_.size();
-            double vid = (k > 0) ? suma / k : 0.0;
-            double med = mediana(nd_);
-
-            galutinis_vid_ = 0.4 * vid + 0.6 * egzaminas_;
-            galutinis_med_ = 0.4 * med + 0.6 * egzaminas_;
-        }
-    }
+std::istream& studentas::readStudent(std::istream& is) {
+    is >> vardas_ >> pavarde_;
     return is;
 }
 
@@ -74,9 +45,6 @@ void generuotiStudentuFaila(const string &failoPavadinimas, int kiekis, int nd_k
         std::cout<<"\nKlaida: nepavyko sukurti failo "<<failoPavadinimas<<"\n";
         return;
     }
-
-    //vector<char> buffer(1024 * 1024);
-    //f.rdbuf()->pubsetbuf(buffer.data(), buffer.size());
 
     static std::random_device rd;
     static std::mt19937 gen(rd());
@@ -105,7 +73,7 @@ void generuotiStudentuFaila(const string &failoPavadinimas, int kiekis, int nd_k
     std::cout<<"Atlikta\n\n";
 }
 
-void printas(const Studentas &laik, std::ofstream &R)
+void printas(const studentas &laik, std::ofstream &R)
 {
     R<<std::left<<std::setw(15)<<laik.vardas()
      <<std::left<<std::setw(15)<<laik.pavarde()
