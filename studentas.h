@@ -161,7 +161,7 @@ void dalinti1Strategija(const Container &grupe, Container &vargsiukai, Container
 
     for (const auto &s : grupe)
     {
-        if (s.galutinis_vid < 5.0)
+        if (s.galutinis_vid() < 5.0)
         {
             vargsiukai.push_back(s);
         }
