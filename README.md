@@ -25,8 +25,10 @@
 | **BENDRAS LAIKAS** | **12.5277** | **15.0920** | **+2.5643** |
 
 ---
-![class](klase v.png)
-![struct](struct v.png)
+
+![Class realizacija](klase v.png)
+
+![Struct realizacija](struct v.png)
 
 ## Išvados
 * **`struct` veikia greičiau:** Apdorojant 100 000 įrašų sutaupoma ~0.14 s, o su 1 000 000 įrašų – ~2.56 s.
@@ -57,9 +59,17 @@
 | **1 000 000 įrašų** (`studentai_1000000.txt`) | 11.3792 s | 10.6870 s | 11.1628 s |
 
 ---
-![O1](-O1.png)
-![O2](-O2.png)
-![O3](-O3.png)
+### Spartos analizė (-O1)
+
+![-O1 rezultatai](-O1.png)
+
+### Spartos analizė (-O2)
+
+![-O2 rezultatai](-O2.png)
+
+### Spartos analizė (-O3)
+
+![-O3 rezultatai](-O3.png)
 ## Išvados
 * **Optimizavimo įtaka:** Įjungus aukštesnius optimizavimo lygius (`-O2` ir `-O3`), žymiai pagreitėja didelių duomenų kiekio (1 000 000 įrašų) apdorojimas naudojant `std::vector` konteinerį (laikas sumažėja nuo ~12.2 s iki ~9.0 s).
 * **Konteinerių palyginimas optimizavus:** Prie `-O3` optimizavimo `std::vector` tampa pastebimai pranašesnis už `std::list` apdorojant milijoną įrašų (~9.0 s prieš ~11.2 s).
