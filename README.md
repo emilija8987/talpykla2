@@ -26,6 +26,8 @@
 
 ---
 
+### Spartos analizė (`class` vs `struct`)
+
 ![Class realizacija](klase v.png)
 
 ![Struct realizacija](struct v.png)
