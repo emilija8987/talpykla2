@@ -28,9 +28,9 @@
 
 ### Spartos analizė (`class` vs `struct`)
 
-![Class realizacija](klase v.png)
+![Class realizacija](klasev.png)
 
-![Struct realizacija](struct v.png)
+![Struct realizacija](structv.png)
 
 ## Išvados
 * **`struct` veikia greičiau:** Apdorojant 100 000 įrašų sutaupoma ~0.14 s, o su 1 000 000 įrašų – ~2.56 s.
