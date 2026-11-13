@@ -25,6 +25,8 @@
 | **BENDRAS LAIKAS** | **12.5277** | **15.0920** | **+2.5643** |
 
 ---
+!(klase v.png)
+!(struct v.png)
 
 ## Išvados
 * **`struct` veikia greičiau:** Apdorojant 100 000 įrašų sutaupoma ~0.14 s, o su 1 000 000 įrašų – ~2.56 s.
