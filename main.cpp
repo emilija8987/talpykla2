@@ -1,6 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <iomanip>
+#include <sstream>
 #include <chrono>
 #include <algorithm>
 #include <list>
@@ -21,6 +23,46 @@ int gautiRusiavimoKriteriju()
     std::cout << "3 - Pagal galutini vidurki\n";
     std::cout << "4 - Pagal galutine mediana\n";
     return ivestiSkaiciu("Jusu pasirinkimas (1-4): ", 1, 4);
+}
+
+template <typename Container>
+void isvestiIEkrana(const Container &grupe)
+{
+    std::cout << std::left << std::setw(15) << "Vardas"
+              << std::left << std::setw(15) << "Pavarde"
+              << std::left << std::setw(18) << "Galutinis (vid.)"
+              << std::left << std::setw(18) << "Galutinis (med.)\n";
+    std::cout << "-------------------------------------------------------------------\n";
+    for (const auto &x : grupe)
+    {
+        std::cout << x << "\n";
+    }
+}
+
+template <typename Container>
+void apdorotiIrIsrasytiGrupe(Container &grupe)
+{
+    if (grupe.empty())
+    {
+        std::cout << "Nera duomenu isvedimui.\n";
+        return;
+    }
+
+    int rusiavimo_kriterijus = gautiRusiavimoKriteriju();
+    rusiuotiStudentus(grupe, rusiavimo_kriterijus);
+
+    Container vargsiukai;
+    Container kietiakiai;
+    dalinti1Strategija(grupe, vargsiukai, kietiakiai);
+
+    std::cout << "\n--- Vargsiukai ---\n";
+    isvestiIEkrana(vargsiukai);
+    std::cout << "\n--- Kietiakiai ---\n";
+    isvestiIEkrana(kietiakiai);
+
+    irasytiIFaila("vargsiukai.txt", vargsiukai);
+    irasytiIFaila("kietiakiai.txt", kietiakiai);
+    std::cout << "Duomenys irasyti i 'vargsiukai.txt' ir 'kietiakiai.txt'.\n";
 }
 
 template <typename Container>
@@ -91,6 +133,42 @@ void atliktiAnalize(int strategijos_nr, const string &failo_pavadinimas, int kie
               << std::setw(11) << suma_bendras / testu_kiekis << "s\n";
 }
 
+void demonstruotiKlasesVeikima()
+{
+    std::cout << "\n=== KLASES 'studentas' DEMONSTRACIJA ===\n";
+
+    std::istringstream eilute("Jonas Jonaitis 8 9 10 7 9");
+    studentas s1;
+    eilute >> s1;
+    std::cout << "\n1. Nuskaitytas per >> ir isvestas per << (s1):\n" << s1 << "\n";
+
+    studentas s2(s1);
+    std::cout << "\n2. Sukurtas per kopijavimo konstruktoriu s2(s1):\n" << s2 << "\n";
+
+    s2.setPavarde("Pakeistas");
+    s2.pridetiNd(10);
+    std::cout << "Po s2 pakeitimu:\n";
+    std::cout << "  s1 (originalas): " << s1 << "\n";
+    std::cout << "  s2 (kopija):     " << s2 << "\n";
+
+    studentas s3;
+    s3 = s1;
+    std::cout << "\n3. Priskirta per operator= (s3 = s1):\n" << s3 << "\n";
+
+    s3 = s3;
+    std::cout << "Po saves priskyrimo (s3 = s3):\n" << s3 << "\n";
+
+    std::cout << "\n4. Lokalus blokas (objektas sunaikinamas isejus is bloko):\n";
+    {
+        studentas laikinas(s1);
+        laikinas.setVardas("Laikinas");
+        std::cout << "  Bloko viduje: " << laikinas << "\n";
+    }
+    std::cout << "  Po lokalaus bloko.\n";
+
+    std::cout << "\n=== DEMONSTRACIJOS PABAIGA ===\n\n";
+}
+
 template <typename Container>
 void vykdytiRankiniIvedima(string konteinerio_pavadinimas)
 {
@@ -100,42 +178,43 @@ void vykdytiRankiniIvedima(string konteinerio_pavadinimas)
     for (int j = 0; j < n; j++)
     {
         studentas laik;
-        string v, p;
-        std::cout << "Iveskite per tarpa studento varda ir pavarde: ";
-        std::cin >> v >> p;
-        laik.setVardas(v);
-        laik.setPavarde(p);
 
         std::cout << "\nPasirinkite kaip ivesti pazymius:\n";
-        std::cout << "1 - Ivesti pazymius ir egzamina ranka\n";
+        std::cout << "1 - Ivesti studenta (varda, pavarde, pazymius ir egzamina) per >> operatoriu\n";
         std::cout << "2 - Ivesti pazymius ir egzamina atsitiktinai\n";
-        std::cout << "3 - Demonstruoti 'studentas' klases metodus ir operatorius\n";
-        int rezimas = ivestiSkaiciu("Jusu pasirinkimas (1-3): ", 1, 3);
+        int pasirinkimas = ivestiSkaiciu("Jusu pasirinkimas (1 arba 2): ", 1, 2);
 
-        double suma = 0;
         if (pasirinkimas == 1)
         {
-            std::cout << "Veskite studento pazymius. Noredami baigti iveskite '0'.\n";
+            std::cout << "Iveskite viena eilute: Vardas Pavarde pazymiai... Egzaminas (ir paspauskite Enter):\n";
+            std::cin.ignore(1000, '\n');
             while (true)
             {
-                int a = ivestiSkaiciu("Iveskite pazymi (0 - baigti): ", 0, 10);
-                if (a == 0) break;
-                suma += a;
-                laik.pridetiNd(a);
+                std::string eilute;
+                std::getline(std::cin, eilute);
+                std::istringstream ss(eilute);
+                if (ss >> laik && !laik.vardas().empty() && !laik.pavarde().empty() && laik.egz() > 0)
+                {
+                    break;
+                }
+                std::cout << "Klaida. Bandykite ivesti dar karta (Vardas Pavarde nd1 ... egz):\n";
             }
-            int egz_rez = ivestiSkaiciu("Iveskite egzamino rezultata: ", 1, 10);
-            laik.setEgz(egz_rez);
         }
         else
         {
+            string v, p;
+            std::cout << "Iveskite per tarpa studento varda ir pavarde: ";
+            std::cin >> v >> p;
+            laik.setVardas(v);
+            laik.setPavarde(p);
+
             int nd_kiek = ivestiSkaiciu("Kiek atsitiktiniu pazymiu (1-50)? ", 1, 50);
             std::cout << "Pazymiai: ";
             for (int i = 0; i < nd_kiek; i++)
             {
-                int p = atspazymiai(1, 10);
-                laik.pridetiNd(p);
-                suma += p;
-                std::cout << p << " ";
+                int p_paz = atspazymiai(1, 10);
+                laik.pridetiNd(p_paz);
+                std::cout << p_paz << " ";
             }
             std::cout << "\n";
             int egz_rez = atspazymiai(1, 10);
@@ -143,54 +222,20 @@ void vykdytiRankiniIvedima(string konteinerio_pavadinimas)
             std::cout << "Egzaminas: " << egz_rez << "\n";
         }
 
-        double vid = 0;
-        double med = 0;
-        int k = laik.nd().size();
-        if (k > 0)
-        {
-            vid = suma / k;
-            med = mediana(laik.nd());
-        }
-
-        double gal_vid = 0.4 * vid + 0.6 * laik.egz();
-        double gal_med = 0.4 * med + 0.6 * laik.egz();
-        laik.setGalutiniai(gal_vid, gal_med);
-
         grupe.push_back(laik);
         std::cout << "Ivestas studentas (" << konteinerio_pavadinimas << "): " << grupe.back() << "\n";
         std::cout << "Studento atminties adresas (" << konteinerio_pavadinimas << "): " << &grupe.back() << "\n";
     }
-
-    if (!grupe.empty())
-    {
-        int rusiavimo_kriterijus = gautiRusiavimoKriteriju();
-        rusiuotiStudentus(grupe, rusiavimo_kriterijus);
-
-        Container vargsiukai;
-        Container kietiakiai;
-
-        for (const auto &s : grupe)
-        {
-            if (s.galutinis_vid() < 5.0) vargsiukai.push_back(s);
-            else kietiakiai.push_back(s);
-        }
-
-        irasytiIFaila("vargsiukai.txt", vargsiukai);
-        irasytiIFaila("kietiakiai.txt", kietiakiai);
-        std::cout << "Duomenys irasyti i 'vargsiukai.txt' ir 'kietiakiai.txt'.\n";
-    }
-    else
-    {
-        std::cout << "Nera duomenu isvedimui.\n";
-    }
+    apdorotiIrIsrasytiGrupe(grupe);
 }
 
 int main()
 {
-    std::cout << "Pasirinkite programos reazima:\n";
-    std::cout << "1 - Paleisti AUTOMATINE SPARTOS ANALIZE visiems 5 failams\n";
+    std::cout << "Pasirinkite programos rezima:\n";
+    std::cout << "1 - Paleisti AUTOMATINE SPARTOS ANALIZE visiems failams\n";
     std::cout << "2 - Vykdyti iprasta programa (pasirinkti viena faila arba vesti ranka)\n";
-    int rezimas = ivestiSkaiciu("Jusu pasirinkimas (1 arba 2): ", 1, 2);
+    std::cout << "3 - Demonstruoti 'studentas' klases metodus ir operatorius\n";
+    int rezimas = ivestiSkaiciu("Jusu pasirinkimas (1-3): ", 1, 3);
 
     if (rezimas == 1)
     {
@@ -245,7 +290,7 @@ int main()
 
         std::cout << "========================================================================================================================\n\n";
     }
-    else
+    else if (rezimas == 2)
     {
         std::vector<studentas> grupe;
 
@@ -271,26 +316,22 @@ int main()
 
         if (variantas >= 1 && variantas <= 5)
         {
+            const string failai[5] = {
+                "studentai_1000.txt",
+                "studentai_10000.txt",
+                "studentai_100000.txt",
+                "studentai_1000000.txt",
+                "studentai_10000000.txt"
+            };
+            const int kiekiai[5] = {1000, 10000, 100000, 1000000, 10000000};
+
+            failo_pavadinimas = failai[variantas - 1];
+            kiekis = kiekiai[variantas - 1];
+
             generuotiStudentuFaila(failo_pavadinimas, kiekis);
-            skaitytiFaila(grupe, failo_pavadinimas, kiekis);
-
-            if (!grupe.empty())
+            if (skaitytiFaila(grupe, failo_pavadinimas, kiekis))
             {
-                int rusiavimo_kriterijus = gautiRusiavimoKriteriju();
-                rusiuotiStudentus(grupe, rusiavimo_kriterijus);
-
-                vector<studentas> vargsiukai;
-                vector<studentas> kietiakiai;
-
-                for (const auto &s : grupe)
-                {
-                    if (s.galutinis_vid() < 5.0) vargsiukai.push_back(s);
-                    else kietiakiai.push_back(s);
-                }
-
-                irasytiIFaila("vargsiukai.txt", vargsiukai);
-                irasytiIFaila("kietiakiai.txt", kietiakiai);
-                std::cout << "Duomenys irasyti i 'vargsiukai.txt' ir 'kietiakiai.txt'.\n";
+                apdorotiIrIsrasytiGrupe(grupe);
             }
         }
 
@@ -304,27 +345,10 @@ int main()
                 if (skaitytiFaila(grupe, failo_pavadinimas)) break;
                 std::cout << "Bandykite dar karta.\n\n";
             }
-            if (!grupe.empty())
-            {
-                int rusiavimo_kriterijus = gautiRusiavimoKriteriju();
-                rusiuotiStudentus(grupe, rusiavimo_kriterijus);
-
-                vector<studentas> vargsiukai;
-                vector<studentas> kietiakiai;
-
-                for (const auto &s : grupe)
-                {
-                    if (s.galutinis_vid() < 5.0) vargsiukai.push_back(s);
-                    else kietiakiai.push_back(s);
-                }
-
-                irasytiIFaila("vargsiukai.txt", vargsiukai);
-                irasytiIFaila("kietiakiai.txt", kietiakiai);
-                std::cout << "Duomenys irasyti i 'vargsiukai.txt' ir 'kietiakiai.txt'.\n";
-            }
+            apdorotiIrIsrasytiGrupe(grupe);
         }
 
-        if (variantas == 7)
+        else if (variantas == 7)
         {
             std::cout << "Pasirinkite konteineri rankiniam ivedimui:\n";
             std::cout << "1 - std::vector\n";
@@ -340,6 +364,10 @@ int main()
                 vykdytiRankiniIvedima<std::list<studentas>>("list");
             }
         }
+    }
+    else if (rezimas == 3)
+    {
+        demonstruotiKlasesVeikima();
     }
 
     return 0;

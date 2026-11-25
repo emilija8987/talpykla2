@@ -23,6 +23,14 @@ int ivestiSkaiciu(string tekstas, int maz, int did)
     }
 }
 
+double vidurkis(std::vector<int> v)
+{
+    if (v.empty()) return 0.0;
+    double suma = 0;
+    for (int p : v) suma += p;
+    return suma / v.size();
+}
+
 double mediana(std::vector<int> v)
 {
     if (v.empty()) return 0.0;

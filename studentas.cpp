@@ -9,7 +9,8 @@
 using std::string;
 using std::vector;
 
-studentas::studentas(std::istream& is) {
+studentas::studentas(std::istream& is)
+    : egz_(0), galutinis_vid_(0.0), galutinis_med_(0.0) {
     readStudent(is);
 }
 
@@ -33,30 +34,44 @@ studentas& studentas::operator=(const studentas& other) {
     return *this;
 }
 
-studentas::~studentas() {
-    nd_.clear();
-    nd_.shrink_to_fit();
+studentas::~studentas() {}
+
+void studentas::setEgz(int e) {
+    egz_ = e;
+    galutinis_vid_ = galBalas(vidurkis);
+    galutinis_med_ = galBalas(mediana);
+}
+
+void studentas::pridetiNd(int pazymys) {
+    nd_.push_back(pazymys);
+    galutinis_vid_ = galBalas(vidurkis);
+    galutinis_med_ = galBalas(mediana);
+}
+
+void studentas::setNd(const std::vector<int>& n) {
+    nd_ = n;
+    galutinis_vid_ = galBalas(vidurkis);
+    galutinis_med_ = galBalas(mediana);
 }
 
 double studentas::galBalas(double (*f)(std::vector<int>)) const {
     if (nd_.empty()) return 0.6 * egz_;
-
-    double suma = 0;
-    for (int p : nd_) {
-        suma += p;
-    }
-    double vid = suma / nd_.size();
-    return 0.4 * vid + 0.6 * egz_;
+    return 0.4 * f(nd_) + 0.6 * egz_;
 }
 
 std::istream& studentas::readStudent(std::istream& is) {
-    is >> vardas_ >> pavarde_;
-    return is;
+    return operator>>(is, *this);
 }
 
 std::istream& operator>>(std::istream& is, studentas& s) {
     s.nd_.clear();
-    if (!(is >> s.vardas_ >> s.pavarde_)) {
+    s.vardas_.clear();
+    s.pavarde_.clear();
+    s.egz_ = 0;
+    s.galutinis_vid_ = 0.0;
+    s.galutinis_med_ = 0.0;
+
+    if (!(is >> std::ws >> s.vardas_ >> s.pavarde_)) {
         return is;
     }
 
@@ -67,7 +82,16 @@ std::istream& operator>>(std::istream& is, studentas& s) {
     std::vector<int> skaiciai;
     int paz;
     while (eilutes_srautas >> paz) {
+        if (paz < 1 || paz > 10) {
+            is.setstate(std::ios::failbit);
+            return is;
+        }
         skaiciai.push_back(paz);
+    }
+
+    if (!eilutes_srautas.eof() && eilutes_srautas.fail()) {
+        is.setstate(std::ios::failbit);
+        return is;
     }
 
     if (!skaiciai.empty()) {
@@ -78,21 +102,22 @@ std::istream& operator>>(std::istream& is, studentas& s) {
         s.egz_ = 0;
     }
 
-    double suma = 0;
-    for (int p : s.nd_) suma += p;
-    double vid = s.nd_.empty() ? 0.0 : suma / s.nd_.size();
-    double med = mediana(s.nd_);
-
-    s.galutinis_vid_ = 0.4 * vid + 0.6 * s.egz_;
-    s.galutinis_med_ = 0.4 * med + 0.6 * s.egz_;
+    s.galutinis_vid_ = s.galBalas(vidurkis);
+    s.galutinis_med_ = s.galBalas(mediana);
     return is;
 }
 
 std::ostream& operator<<(std::ostream& os, const studentas& s) {
+    std::ios::fmtflags senos_veliaveles = os.flags();
+    std::streamsize senas_tikslumas = os.precision();
+
     os << std::left << std::setw(15) << s.vardas_
        << std::left << std::setw(15) << s.pavarde_
        << std::left << std::setw(18) << std::fixed << std::setprecision(2) << s.galutinis_vid_
        << std::left << std::setw(18) << std::fixed << std::setprecision(2) << s.galutinis_med_;
+
+    os.flags(senos_veliaveles);
+    os.precision(senas_tikslumas);
     return os;
 }
 
@@ -113,10 +138,6 @@ void generuotiStudentuFaila(const string &failoPavadinimas, int kiekis, int nd_k
         return;
     }
 
-    static std::random_device rd;
-    static std::mt19937 gen(rd());
-    std::uniform_int_distribution<int> dist(1, 10);
-
     f<<std::left<<std::setw(15)<<"Vardas"<<std::setw(15)<<"Pavarde";
     for (int i=1; i<=nd_kiek; i++)
     {
@@ -131,9 +152,9 @@ void generuotiStudentuFaila(const string &failoPavadinimas, int kiekis, int nd_k
 
         for (int j=0; j< nd_kiek; j++)
         {
-            f<<std::setw(8)<<dist(gen);
+            f<<std::setw(8)<<atspazymiai(1, 10);
         }
-        f<<std::setw(10)<<dist(gen)<<"\n";
+        f<<std::setw(10)<<atspazymiai(1, 10)<<"\n";
     }
 
     f.close();

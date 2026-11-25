@@ -22,7 +22,8 @@ private:
 
 public:
     studentas() : egz_(0), galutinis_vid_(0), galutinis_med_(0) {}
-    studentas(std::istream& is);
+    explicit studentas(std::istream& is);
+
     studentas(const studentas& other);
     studentas& operator=(const studentas& other);
     ~studentas();
@@ -36,9 +37,9 @@ public:
 
     void setVardas(const std::string& v) { vardas_ = v; }
     void setPavarde(const std::string& p) { pavarde_ = p; }
-    void setEgz(int e) { egz_ = e; }
-    void pridetiNd(int pazymys) { nd_.push_back(pazymys); }
-    void setNd(const std::vector<int>& n) { nd_ = n; }
+    void setEgz(int e);
+    void pridetiNd(int pazymys);
+    void setNd(const std::vector<int>& n);
     void setGalutiniai(double vid, double med) { galutinis_vid_ = vid; galutinis_med_ = med; }
 
     std::istream& readStudent(std::istream& is);
@@ -114,7 +115,7 @@ bool skaitytiFaila(Container &grupe, const std::string &failas, int kiekis = 0)
         studentas laik;
         ss >> laik;
 
-        if (!laik.vardas().empty() && laik.egz() >= 0)
+        if (!ss.fail() && !laik.vardas().empty() && !laik.pavarde().empty() && laik.egz() > 0)
         {
             grupe.push_back(laik);
         }
@@ -124,23 +125,20 @@ bool skaitytiFaila(Container &grupe, const std::string &failas, int kiekis = 0)
 }
 
 template <typename Container>
-typename std::enable_if<std::is_same<Container, std::vector<studentas>>::value>::type
-rusiuotiStudentus(Container &grupe, int kriterijus)
+void rusiuotiStudentus(Container &grupe, int kriterijus)
 {
-    if (kriterijus == 1) std::sort(grupe.begin(), grupe.end(), palygintiPagalVarda);
-    else if (kriterijus == 2) std::sort(grupe.begin(), grupe.end(), palygintiPagalPavarde);
-    else if (kriterijus == 3) std::sort(grupe.begin(), grupe.end(), palygintiPagalVidurki);
-    else if (kriterijus == 4) std::sort(grupe.begin(), grupe.end(), palygintiPagalMediana);
-}
+    auto comp = [kriterijus](const studentas &a, const studentas &b) {
+        if (kriterijus == 1) return palygintiPagalVarda(a, b);
+        if (kriterijus == 2) return palygintiPagalPavarde(a, b);
+        if (kriterijus == 3) return palygintiPagalVidurki(a, b);
+        return palygintiPagalMediana(a, b);
+    };
 
-template <typename Container>
-typename std::enable_if<!std::is_same<Container, std::vector<studentas>>::value>::type
-rusiuotiStudentus(Container &grupe, int kriterijus)
-{
-    if (kriterijus == 1) grupe.sort(palygintiPagalVarda);
-    else if (kriterijus == 2) grupe.sort(palygintiPagalPavarde);
-    else if (kriterijus == 3) grupe.sort(palygintiPagalVidurki);
-    else if (kriterijus == 4) grupe.sort(palygintiPagalMediana);
+    if constexpr (std::is_same<Container, std::vector<studentas>>::value) {
+        std::sort(grupe.begin(), grupe.end(), comp);
+    } else {
+        grupe.sort(comp);
+    }
 }
 
 template <typename Container>
@@ -231,12 +229,11 @@ void dalinti3Strategija(Container &grupe, Container &vargsiukai, Container &kiet
         grupe.clear();
     }
     else {
-        kietiakiai = grupe;
+        kietiakiai = std::move(grupe);
+        vargsiukai = kietiakiai;
+
         kietiakiai.remove_if([](const studentas &s) { return s.galutinis_vid() < 5.0; });
-
-        vargsiukai = grupe;
         vargsiukai.remove_if([](const studentas &s) { return s.galutinis_vid() >= 5.0; });
-
         grupe.clear();
     }
 }
