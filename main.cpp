@@ -137,10 +137,15 @@ void demonstruotiKlasesVeikima()
 {
     std::cout << "\n=== KLASES 'studentas' DEMONSTRACIJA ===\n";
 
-    std::istringstream eilute("Jonas Jonaitis 8 9 10 7 9");
+    std::istringstream eilute("Vardas Pavarde 8 9 10 7 9");
     studentas s1;
     eilute >> s1;
     std::cout << "\n1. Nuskaitytas per >> ir isvestas per << (s1):\n" << s1 << "\n";
+
+    Zmogus* z_ptr = &s1;
+    std::cout << "\n1b. Kreipimasis per abstrakcios klases Zmogus* rodykle:\n";
+    z_ptr->spausdintiInfo(std::cout);
+    std::cout << "\n";
 
     studentas s2(s1);
     std::cout << "\n2. Sukurtas per kopijavimo konstruktoriu s2(s1):\n" << s2 << "\n";

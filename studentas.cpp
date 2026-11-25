@@ -10,13 +10,12 @@ using std::string;
 using std::vector;
 
 studentas::studentas(std::istream& is)
-    : egz_(0), galutinis_vid_(0.0), galutinis_med_(0.0) {
+    : Zmogus(), egz_(0), galutinis_vid_(0.0), galutinis_med_(0.0) {
     readStudent(is);
 }
 
 studentas::studentas(const studentas& other)
-    : vardas_(other.vardas_),
-      pavarde_(other.pavarde_),
+    : Zmogus(other),
       nd_(other.nd_),
       egz_(other.egz_),
       galutinis_vid_(other.galutinis_vid_),
@@ -25,8 +24,7 @@ studentas::studentas(const studentas& other)
 studentas& studentas::operator=(const studentas& other) {
     if (this == &other) return *this;
 
-    vardas_ = other.vardas_;
-    pavarde_ = other.pavarde_;
+    Zmogus::operator=(other);
     nd_ = other.nd_;
     egz_ = other.egz_;
     galutinis_vid_ = other.galutinis_vid_;
@@ -52,6 +50,10 @@ void studentas::setNd(const std::vector<int>& n) {
     nd_ = n;
     galutinis_vid_ = galBalas(vidurkis);
     galutinis_med_ = galBalas(mediana);
+}
+
+void studentas::spausdintiInfo(std::ostream& os) const {
+    os << *this;
 }
 
 double studentas::galBalas(double (*f)(std::vector<int>)) const {
