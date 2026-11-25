@@ -112,40 +112,10 @@ bool skaitytiFaila(Container &grupe, const std::string &failas, int kiekis = 0)
 
         std::stringstream ss(eilute);
         studentas laik;
-        std::string v, p;
-        ss >> v >> p;
-        laik.setVardas(v);
-        laik.setPavarde(p);
+        ss >> laik;
 
-        std::vector<int> skaiciai;
-        int paz;
-        while (ss >> paz)
+        if (!laik.vardas().empty() && laik.egz() >= 0)
         {
-            skaiciai.push_back(paz);
-        }
-
-        if (!skaiciai.empty())
-        {
-            int egzaminas = skaiciai.back();
-            skaiciai.pop_back();
-
-            laik.setEgz(egzaminas);
-            laik.setNd(skaiciai);
-
-            double suma = 0;
-            for (int pazymys : laik.nd())
-            {
-                suma += pazymys;
-            }
-
-            int k = laik.nd().size();
-            double vid = (k > 0) ? suma / k : 0.0;
-            double med = mediana(laik.nd());
-
-            double gal_vid = 0.4 * vid + 0.6 * laik.egz();
-            double gal_med = 0.4 * med + 0.6 * laik.egz();
-            laik.setGalutiniai(gal_vid, gal_med);
-
             grupe.push_back(laik);
         }
     }

@@ -109,7 +109,8 @@ void vykdytiRankiniIvedima(string konteinerio_pavadinimas)
         std::cout << "\nPasirinkite kaip ivesti pazymius:\n";
         std::cout << "1 - Ivesti pazymius ir egzamina ranka\n";
         std::cout << "2 - Ivesti pazymius ir egzamina atsitiktinai\n";
-        int pasirinkimas = ivestiSkaiciu("Jusu pasirinkimas (1 arba 2): ", 1, 2);
+        std::cout << "3 - Demonstruoti 'studentas' klases metodus ir operatorius\n";
+        int rezimas = ivestiSkaiciu("Jusu pasirinkimas (1-3): ", 1, 3);
 
         double suma = 0;
         if (pasirinkimas == 1)
@@ -156,6 +157,7 @@ void vykdytiRankiniIvedima(string konteinerio_pavadinimas)
         laik.setGalutiniai(gal_vid, gal_med);
 
         grupe.push_back(laik);
+        std::cout << "Ivestas studentas (" << konteinerio_pavadinimas << "): " << grupe.back() << "\n";
         std::cout << "Studento atminties adresas (" << konteinerio_pavadinimas << "): " << &grupe.back() << "\n";
     }
 

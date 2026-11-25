@@ -56,16 +56,24 @@ std::istream& studentas::readStudent(std::istream& is) {
 
 std::istream& operator>>(std::istream& is, studentas& s) {
     s.nd_.clear();
-    is >> s.vardas_ >> s.pavarde_;
-
-    int paz;
-    while (is >> paz) {
-        s.nd_.push_back(paz);
+    if (!(is >> s.vardas_ >> s.pavarde_)) {
+        return is;
     }
 
-    if (!s.nd_.empty()) {
-        s.egz_ = s.nd_.back();
-        s.nd_.pop_back();
+    std::string likutis;
+    std::getline(is, likutis);
+    std::istringstream eilutes_srautas(likutis);
+
+    std::vector<int> skaiciai;
+    int paz;
+    while (eilutes_srautas >> paz) {
+        skaiciai.push_back(paz);
+    }
+
+    if (!skaiciai.empty()) {
+        s.egz_ = skaiciai.back();
+        skaiciai.pop_back();
+        s.nd_ = std::move(skaiciai);
     } else {
         s.egz_ = 0;
     }
