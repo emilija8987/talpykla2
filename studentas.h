@@ -12,35 +12,53 @@
 #include <algorithm>
 #include "pagalbine.h"
 
-class studentas {
+class Zmogus {
+protected:
+    std::string vardas_;
+    std::string pavarde_;
+
+public:
+    Zmogus() : vardas_(""), pavarde_("") {}
+    Zmogus(const std::string& v, const std::string& p) : vardas_(v), pavarde_(p) {}
+    virtual ~Zmogus() = default;
+
+    virtual std::string vardas() const = 0;
+    virtual std::string pavarde() const = 0;
+    virtual void setVardas(const std::string& v) = 0;
+    virtual void setPavarde(const std::string& p) = 0;
+    virtual void spausdintiInfo(std::ostream& os) const = 0;
+};
+
+class studentas : public Zmogus {
 private:
-    std::string vardas_, pavarde_;
     std::vector<int> nd_;
     int egz_;
     double galutinis_vid_;
     double galutinis_med_;
 
 public:
-    studentas() : egz_(0), galutinis_vid_(0), galutinis_med_(0) {}
+    studentas() : Zmogus(), egz_(0), galutinis_vid_(0), galutinis_med_(0) {}
     explicit studentas(std::istream& is);
 
     studentas(const studentas& other);
     studentas& operator=(const studentas& other);
-    ~studentas();
+    ~studentas() override;
 
-    inline std::string vardas() const { return vardas_; }
-    inline std::string pavarde() const { return pavarde_; }
+    inline std::string vardas() const override { return vardas_; }
+    inline std::string pavarde() const override { return pavarde_; }
     inline std::vector<int> nd() const { return nd_; }
     inline int egz() const { return egz_; }
     inline double galutinis_vid() const { return galutinis_vid_; }
     inline double galutinis_med() const { return galutinis_med_; }
 
-    void setVardas(const std::string& v) { vardas_ = v; }
-    void setPavarde(const std::string& p) { pavarde_ = p; }
+    void setVardas(const std::string& v) override { vardas_ = v; }
+    void setPavarde(const std::string& p) override { pavarde_ = p; }
     void setEgz(int e);
     void pridetiNd(int pazymys);
     void setNd(const std::vector<int>& n);
     void setGalutiniai(double vid, double med) { galutinis_vid_ = vid; galutinis_med_ = med; }
+
+    void spausdintiInfo(std::ostream& os) const override;
 
     std::istream& readStudent(std::istream& is);
     double galBalas(double (*) (std::vector<int>) = mediana) const;
@@ -48,6 +66,7 @@ public:
     friend std::istream& operator>>(std::istream& is, studentas& s);
     friend std::ostream& operator<<(std::ostream& os, const studentas& s);
 };
+
 
 void printas(const studentas &laik, std::ofstream &R);
 void generuotiStudentuFaila(const std::string &failoPavadinimas, int kiekis, int nd_kiek = 5);
