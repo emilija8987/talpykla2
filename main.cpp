@@ -135,7 +135,10 @@ void atliktiAnalize(int strategijos_nr, const string &failo_pavadinimas, int kie
 
 void demonstruotiKlasesVeikima()
 {
-    std::cout << "\n=== KLASES 'studentas' DEMONSTRACIJA ===\n";
+    std::cout << "\n=== ABSTRAKCIOS KLASES 'Zmogus' IR ISVESTINES 'studentas' DEMONSTRACIJA ===\n";
+    std::cout << "Patikra (compile-time): std::is_abstract<Zmogus>::value == "
+              << std::boolalpha << std::is_abstract<Zmogus>::value << "\n";
+    std::cout << "Tiesioginis objektas 'Zmogus z;' negalimas (kompiliatorius atmeta, nes yra grynai virtualiu metodu).\n";
 
     std::istringstream eilute("Vardas Pavarde 8 9 10 7 9");
     studentas s1;
@@ -143,7 +146,7 @@ void demonstruotiKlasesVeikima()
     std::cout << "\n1. Nuskaitytas per >> ir isvestas per << (s1):\n" << s1 << "\n";
 
     Zmogus* z_ptr = &s1;
-    std::cout << "\n1b. Kreipimasis per abstrakcios klases Zmogus* rodykle:\n";
+    std::cout << "\n1b. Polimorfinis isvedimas per abstrakcios klases rodykle Zmogus*:\n";
     z_ptr->spausdintiInfo(std::cout);
     std::cout << "\n";
 

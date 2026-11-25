@@ -22,12 +22,17 @@ public:
     Zmogus(const std::string& v, const std::string& p) : vardas_(v), pavarde_(p) {}
     virtual ~Zmogus() = default;
 
+    Zmogus(const Zmogus&) = delete;
+    Zmogus& operator=(const Zmogus&) = delete;
+
     virtual std::string vardas() const = 0;
     virtual std::string pavarde() const = 0;
     virtual void setVardas(const std::string& v) = 0;
     virtual void setPavarde(const std::string& p) = 0;
     virtual void spausdintiInfo(std::ostream& os) const = 0;
 };
+
+static_assert(std::is_abstract<Zmogus>::value, "Zmogus privalo buti abstrakcioji klase");
 
 class studentas : public Zmogus {
 private:
@@ -66,7 +71,6 @@ public:
     friend std::istream& operator>>(std::istream& is, studentas& s);
     friend std::ostream& operator<<(std::ostream& os, const studentas& s);
 };
-
 
 void printas(const studentas &laik, std::ofstream &R);
 void generuotiStudentuFaila(const std::string &failoPavadinimas, int kiekis, int nd_kiek = 5);

@@ -15,7 +15,7 @@ studentas::studentas(std::istream& is)
 }
 
 studentas::studentas(const studentas& other)
-    : Zmogus(other),
+    : Zmogus(other.vardas_, other.pavarde_),
       nd_(other.nd_),
       egz_(other.egz_),
       galutinis_vid_(other.galutinis_vid_),
@@ -24,7 +24,8 @@ studentas::studentas(const studentas& other)
 studentas& studentas::operator=(const studentas& other) {
     if (this == &other) return *this;
 
-    Zmogus::operator=(other);
+    vardas_ = other.vardas_;
+    pavarde_ = other.pavarde_;
     nd_ = other.nd_;
     egz_ = other.egz_;
     galutinis_vid_ = other.galutinis_vid_;
