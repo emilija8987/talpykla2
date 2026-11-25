@@ -54,6 +54,40 @@ std::istream& studentas::readStudent(std::istream& is) {
     return is;
 }
 
+std::istream& operator>>(std::istream& is, studentas& s) {
+    s.nd_.clear();
+    is >> s.vardas_ >> s.pavarde_;
+
+    int paz;
+    while (is >> paz) {
+        s.nd_.push_back(paz);
+    }
+
+    if (!s.nd_.empty()) {
+        s.egz_ = s.nd_.back();
+        s.nd_.pop_back();
+    } else {
+        s.egz_ = 0;
+    }
+
+    double suma = 0;
+    for (int p : s.nd_) suma += p;
+    double vid = s.nd_.empty() ? 0.0 : suma / s.nd_.size();
+    double med = mediana(s.nd_);
+
+    s.galutinis_vid_ = 0.4 * vid + 0.6 * s.egz_;
+    s.galutinis_med_ = 0.4 * med + 0.6 * s.egz_;
+    return is;
+}
+
+std::ostream& operator<<(std::ostream& os, const studentas& s) {
+    os << std::left << std::setw(15) << s.vardas_
+       << std::left << std::setw(15) << s.pavarde_
+       << std::left << std::setw(18) << std::fixed << std::setprecision(2) << s.galutinis_vid_
+       << std::left << std::setw(18) << std::fixed << std::setprecision(2) << s.galutinis_med_;
+    return os;
+}
+
 void generuotiStudentuFaila(const string &failoPavadinimas, int kiekis, int nd_kiek)
 {
     if (failasEgzistuoja(failoPavadinimas))
@@ -100,8 +134,5 @@ void generuotiStudentuFaila(const string &failoPavadinimas, int kiekis, int nd_k
 
 void printas(const studentas &laik, std::ofstream &R)
 {
-    R<<std::left<<std::setw(15)<<laik.vardas()
-     <<std::left<<std::setw(15)<<laik.pavarde()
-     <<std::left<<std::setw(18)<<std::fixed<<std::setprecision(2)<<laik.galutinis_vid()
-     <<std::left<<std::setw(18)<<std::fixed<<std::setprecision(2)<<laik.galutinis_med()<<"\n";
+    R<<laik<<"\n";
 }
