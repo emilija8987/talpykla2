@@ -23,6 +23,8 @@ private:
 public:
     studentas() : egz_(0), galutinis_vid_(0), galutinis_med_(0) {}
     studentas(std::istream& is);
+    studentas(const studentas& other);
+    studentas& operator=(const studentas& other);
     ~studentas();
 
     inline std::string vardas() const { return vardas_; }
@@ -41,6 +43,9 @@ public:
 
     std::istream& readStudent(std::istream& is);
     double galBalas(double (*) (std::vector<int>) = mediana) const;
+
+    friend std::istream& operator>>(std::istream& is, studentas& s);
+    friend std::ostream& operator<<(std::ostream& os, const studentas& s);
 };
 
 void printas(const studentas &laik, std::ofstream &R);
