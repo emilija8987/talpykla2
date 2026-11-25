@@ -13,6 +13,31 @@ studentas::studentas(std::istream& is) {
     readStudent(is);
 }
 
+studentas::studentas(const studentas& other)
+    : vardas_(other.vardas_),
+      pavarde_(other.pavarde_),
+      nd_(other.nd_),
+      egz_(other.egz_),
+      galutinis_vid_(other.galutinis_vid_),
+      galutinis_med_(other.galutinis_med_) {}
+
+studentas& studentas::operator=(const studentas& other) {
+    if (this == &other) return *this;
+
+    vardas_ = other.vardas_;
+    pavarde_ = other.pavarde_;
+    nd_ = other.nd_;
+    egz_ = other.egz_;
+    galutinis_vid_ = other.galutinis_vid_;
+    galutinis_med_ = other.galutinis_med_;
+    return *this;
+}
+
+studentas::~studentas() {
+    nd_.clear();
+    nd_.shrink_to_fit();
+}
+
 double studentas::galBalas(double (*f)(std::vector<int>)) const {
     if (nd_.empty()) return 0.6 * egz_;
 
@@ -27,10 +52,6 @@ double studentas::galBalas(double (*f)(std::vector<int>)) const {
 std::istream& studentas::readStudent(std::istream& is) {
     is >> vardas_ >> pavarde_;
     return is;
-}
-studentas::~studentas() {
-    nd_.clear();
-    nd_.shrink_to_fit();
 }
 
 void generuotiStudentuFaila(const string &failoPavadinimas, int kiekis, int nd_kiek)
