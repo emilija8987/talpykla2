@@ -23,6 +23,7 @@ private:
 public:
     studentas() : egz_(0), galutinis_vid_(0), galutinis_med_(0) {}
     studentas(std::istream& is);
+    ~studentas();
 
     inline std::string vardas() const { return vardas_; }
     inline std::string pavarde() const { return pavarde_; }
@@ -83,9 +84,7 @@ pabandykReserve(C &grupe, int kiekis) {
 
 template <typename C>
 typename std::enable_if<!std::is_same<C, std::vector<studentas>>::value>::type
-pabandykReserve(C &grupe, int kiekis) {
-
-}
+pabandykReserve(C &, int) {}
 
 template <typename Container>
 bool skaitytiFaila(Container &grupe, const std::string &failas, int kiekis = 0)

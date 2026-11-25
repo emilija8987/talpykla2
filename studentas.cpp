@@ -28,6 +28,10 @@ std::istream& studentas::readStudent(std::istream& is) {
     is >> vardas_ >> pavarde_;
     return is;
 }
+studentas::~studentas() {
+    nd_.clear();
+    nd_.shrink_to_fit();
+}
 
 void generuotiStudentuFaila(const string &failoPavadinimas, int kiekis, int nd_kiek)
 {
