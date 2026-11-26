@@ -137,7 +137,7 @@ void demonstruotiKlasesVeikima()
 {
     std::cout << "\n=== KLASES 'studentas' DEMONSTRACIJA ===\n";
 
-    std::istringstream eilute("Jonas Jonaitis 8 9 10 7 9");
+    std::istringstream eilute("Vardas Pavarde 8 9 10 7 9");
     studentas s1;
     eilute >> s1;
     std::cout << "\n1. Nuskaitytas per >> ir isvestas per << (s1):\n" << s1 << "\n";
@@ -305,14 +305,7 @@ int main()
         int variantas = ivestiSkaiciu("Jusu pasirinkimas: ", 1, 7);
 
         string failo_pavadinimas = "";
-
         int kiekis = 0;
-
-        if (variantas == 1) { failo_pavadinimas = "studentai_1000.txt"; kiekis = 1000; }
-        else if (variantas == 2) { failo_pavadinimas = "studentai_10000.txt"; kiekis = 10000; }
-        else if (variantas == 3) { failo_pavadinimas = "studentai_100000.txt"; kiekis = 100000; }
-        else if (variantas == 4) { failo_pavadinimas = "studentai_1000000.txt"; kiekis = 1000000; }
-        else if (variantas == 5) { failo_pavadinimas = "studentai_10000000.txt"; kiekis = 10000000; }
 
         if (variantas >= 1 && variantas <= 5)
         {
