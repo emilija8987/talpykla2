@@ -31,6 +31,7 @@ Programoje realizuota `studentas` klasė su **Rule of Three** (`studentas(const 
 
 ### 2. Rankinis įvedimas ir automatinis pažymių generavimas
 ![Įvedimas ir išvedimas ekrane](generavimas.png)
+![Įvedimas ir išvedimas ekrane](operator.png)
 
 ### 3. Išvestis į failą (`vargsiukai.txt` / `kietiakiai.txt`)
 ![Išvestis į failą](failasK.png)
