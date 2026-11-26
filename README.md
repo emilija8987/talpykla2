@@ -16,7 +16,7 @@ Programoje realizuota `studentas` klasė su **Rule of Three** (`studentas(const 
 * **Į ekraną:** naudojamas spausdinant studentus į konsolę (`std::cout`).
 * **Į failą:** naudojamas įrašant suformuotus rezultatus į failus (pvz., `vargsiukai.txt`, `kietiakiai.txt`).
 
-## Funkcionalumo ir spartos santrauka
+### Funkcionalumo ir spartos santrauka
 
 | Režimas / Funkcija | Konteineriai | Aprašymas |
 | :--- | :--- | :--- |
