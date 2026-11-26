@@ -13,6 +13,8 @@ studentas::studentas(std::istream& is) {
     readStudent(is);
 }
 
+studentas::~studentas() {}
+
 double studentas::galBalas(double (*f)(std::vector<int>)) const {
     if (nd_.empty()) return 0.6 * egz_;
 
