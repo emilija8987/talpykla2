@@ -22,7 +22,7 @@ Programoje realizuota abstrakti bazinė klasė `Zmogus` ir iš jos išvestinė k
 * **Į ekraną:** naudojamas spausdinant studentus į konsolę (`std::cout`), taip pat per `spausdintiInfo` (polimorfiškai per `Zmogus*`).
 * **Į failą:** naudojamas įrašant suformuotus rezultatus į failus (`vargsiukai.txt`, `kietiakiai.txt` per `printas`).
 
-## Funkcionalumo ir spartos santrauka
+### Funkcionalumo ir spartos santrauka
 
 | Režimas / Funkcija | Konteineriai / Klasės | Aprašymas |
 | :--- | :--- | :--- |
