@@ -2,6 +2,7 @@
 .vs/
 *.exe
 *.out
+*.png
 *.o
 *.obj
 build/
