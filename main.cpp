@@ -316,12 +316,6 @@ int main()
 
         int kiekis = 0;
 
-        if (variantas == 1) { failo_pavadinimas = "studentai_1000.txt"; kiekis = 1000; }
-        else if (variantas == 2) { failo_pavadinimas = "studentai_10000.txt"; kiekis = 10000; }
-        else if (variantas == 3) { failo_pavadinimas = "studentai_100000.txt"; kiekis = 100000; }
-        else if (variantas == 4) { failo_pavadinimas = "studentai_1000000.txt"; kiekis = 1000000; }
-        else if (variantas == 5) { failo_pavadinimas = "studentai_10000000.txt"; kiekis = 10000000; }
-
         if (variantas >= 1 && variantas <= 5)
         {
             const string failai[5] = {
